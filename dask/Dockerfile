@@ -36,3 +36,15 @@ chown -R ${USER}:${USER} ${SSHDIR}/
 RUN eval `ssh-agent -s` && ssh-add ${SSHDIR}/id_rsa
 
 ##################################################
+
+
+###################################################
+## supervisor container startup
+
+ADD conf/supervisord/supervisord.conf /etc/supervisor/supervisord.conf
+
+EXPOSE 22
+ADD batch-runtime-scripts/entry-point.sh batch-runtime-scripts/entry-point.sh
+RUN chmod 0755 batch-runtime-scripts/entry-point.sh
+ADD main.py main.py
+CMD /batch-runtime-scripts/entry-point.sh
