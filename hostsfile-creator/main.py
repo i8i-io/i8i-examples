@@ -4,8 +4,8 @@ import os
 def append_to_hostsfile():
    ip_address = socket.gethostbyname(socket.gethostname())
    print("ipaddress", ip_address)
-   hostsfile = "/input/hostsfile"
-   lockfile = "/input/hostsfile.lock"
+   hostsfile = "/input/mpi/hostsfile"
+   lockfile = "/input/mpi/hostsfile.lock"
    if not os.path.exists(hostsfile):
        with open(hostsfile, "w") as f:
            pass
