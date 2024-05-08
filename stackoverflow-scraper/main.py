@@ -8,8 +8,8 @@ import csv
 import fcntl
 import os 
 
-ARRAY_SIZE = os.environ.get('AWS_BATCH_JOB_ARRAY_SIZE', 1000)
-ARRAY_INDEX = os.environ.get('AWS_BATCH_JOB_ARRAY_INDEX',2)
+ARRAY_SIZE = int(os.environ.get('AWS_BATCH_JOB_ARRAY_SIZE', "1000"))
+ARRAY_INDEX = int(os.environ.get('AWS_BATCH_JOB_ARRAY_INDEX',"2"))
 
 URL = "https://stackoverflow.com/collectives/aws?tab=questions&postfilter=subcommunityquestionpagefilter&subtab=newest&pagesize=50"
 
