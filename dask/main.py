@@ -60,6 +60,8 @@ if __name__ == "__main__":
       ip_addresses = read_lines(hostsfile)
       print("ip_addresses:", ip_addresses)
       supervisord_pid = read_lines("/tmp/supervisord.pid")
+      print("supervisord_pid:", supervisord_pid)
+
       # Set up SSHCluster with provided IP addresses
       cluster = SSHCluster(ip_addresses)
 
