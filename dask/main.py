@@ -5,7 +5,7 @@ import os
 from dask.distributed import Client, SSHCluster
 import time
 
-ARRAY_SIZE = int(os.environ.get('AWS_BATCH_JOB_ARRAY_SIZE', "222"))
+ARRAY_SIZE = int(os.environ.get('AWS_BATCH_JOB_ARRAY_SIZE', "5"))
 ARRAY_INDEX = int(os.environ.get('AWS_BATCH_JOB_ARRAY_INDEX',"0"))
 def append_to_hostsfile(hostsfile):
    ip_address = socket.gethostbyname(socket.gethostname())
