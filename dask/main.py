@@ -48,9 +48,12 @@ def read_lines(file_path):
         return None
      
 if __name__ == "__main__":
-   hostsfile = "hostsfile"
+   hostsfile = "/input/mpi/hostsfile"
    append_to_hostsfile(hostsfile)
    nodes_joined = count_lines(hostsfile)
+   nodes_joined = count_lines(hostsfile)
+   print("nodes_joined", nodes_joined)
+
    if ARRAY_INDEX == 0:
       while nodes_joined < ARRAY_SIZE:
          nodes_joined = count_lines(hostsfile)
