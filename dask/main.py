@@ -73,7 +73,7 @@ if __name__ == "__main__":
         # Connect a Dask client to the cluster
         client = Client(cluster)
         cluster.scale(NUM_NODES)  # scaling to 10 workers
-        os.kill(supervisord_pid[0], signal.SIGTERM)
+        os.kill(int(supervisord_pid[0]), signal.SIGTERM)
         exit(1)
     else:
         print("reporting to master")
