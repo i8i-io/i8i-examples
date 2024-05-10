@@ -68,7 +68,7 @@ if __name__ == "__main__":
         print("supervisord_pid:", supervisord_pid)
     
         # Set up SSHCluster with provided IP addresses
-        cluster = SSHCluster(ip_addresses)
+        cluster = SSHCluster(ip_addresses, connect_options={"known_hosts": None})
     
         # Connect a Dask client to the cluster
         client = Client(cluster)
