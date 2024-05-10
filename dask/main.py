@@ -49,7 +49,7 @@ def read_lines(file_path):
         return lines
     except FileNotFoundError:
         print("Error: File not found.")
-        return None
+        return 0
      
 if __name__ == "__main__":
     hostsfile = "/input/mpi/hostsfile"
@@ -76,5 +76,5 @@ if __name__ == "__main__":
         os.kill(supervisord_pid[0], signal.SIGTERM)
         exit(1)
     else:
+        print("reporting to master")
         append_to_hostsfile(hostsfile)
-         
