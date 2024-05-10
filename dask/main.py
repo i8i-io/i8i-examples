@@ -40,7 +40,7 @@ def count_lines(file_path):
         return line_count
     except FileNotFoundError:
         print("Error: File not found.")
-        return None
+        return 0
      
 def read_lines(file_path):
     try:
@@ -49,7 +49,7 @@ def read_lines(file_path):
         return lines
     except FileNotFoundError:
         print("Error: File not found.")
-        return 0
+        return []
      
 if __name__ == "__main__":
     hostsfile = "/input/mpi/hostsfile"
