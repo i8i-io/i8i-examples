@@ -5,8 +5,12 @@ import os
 from dask.distributed import Client, SSHCluster
 import time
 
-ARRAY_SIZE = int(os.environ.get('AWS_BATCH_JOB_ARRAY_SIZE', "5"))
-ARRAY_INDEX = int(os.environ.get('AWS_BATCH_JOB_ARRAY_INDEX',"0"))
+#ARRAY_SIZE = int(os.environ.get('AWS_BATCH_JOB_ARRAY_SIZE', "5"))
+#ARRAY_INDEX = int(os.environ.get('AWS_BATCH_JOB_ARRAY_INDEX',"0"))
+JOB_INDEX = int(os.environ.get('AWS_BATCH_JOB_NODE_INDEX',"0"))
+NUM_NODES = int(os.environ.get('AWS_BATCH_JOB_NUM_NODES',"1"))
+MAIN_NODE_INDEX = int(os.environ.get('AWS_BATCH_JOB_MAIN_NODE_INDEX',"0"))
+
 def append_to_hostsfile(hostsfile):
    ip_address = socket.gethostbyname(socket.gethostname())
    print("ipaddress", ip_address)
@@ -54,8 +58,8 @@ if __name__ == "__main__":
    nodes_joined = count_lines(hostsfile)
    print("nodes_joined", nodes_joined)
 
-   if ARRAY_INDEX == 0:
-      while nodes_joined < ARRAY_SIZE:
+   if JOB_INDEX == MAIN_NODE_INDEX:
+      while nodes_joined < NUM_NODES:
          nodes_joined = count_lines(hostsfile)
          print("nodes joined: ", nodes_joined)
          time.sleep(6)
@@ -70,6 +74,6 @@ if __name__ == "__main__":
 
       # Connect a Dask client to the cluster
       client = Client(cluster)
-      cluster.scale(ARRAY_SIZE)  # scaling to 10 workers
+      cluster.scale(NUM_NODES)  # scaling to 10 workers
       os.kill(supervisord_pid[0], signal.SIGTERM)
       exit(1)
