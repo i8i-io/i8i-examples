@@ -38,7 +38,7 @@ RUN mkdir -p ${SSHDIR} \
 
 # check if ssh agent is running or not, if not, run
 RUN eval `ssh-agent -s` && ssh-add ${SSHDIR}/id_rsa
-RUN chown ${USER}:${USER} -R /
+RUN chown ${USER}:${USER} -R /input
 
 ##################################################
 
