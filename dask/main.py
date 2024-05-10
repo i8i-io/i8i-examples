@@ -52,28 +52,29 @@ def read_lines(file_path):
         return None
      
 if __name__ == "__main__":
-   hostsfile = "/input/mpi/hostsfile"
-   append_to_hostsfile(hostsfile)
-   nodes_joined = count_lines(hostsfile)
-   nodes_joined = count_lines(hostsfile)
-   print("nodes_joined", nodes_joined)
-
-   if JOB_INDEX == MAIN_NODE_INDEX:
-      while nodes_joined < NUM_NODES:
-         nodes_joined = count_lines(hostsfile)
-         print("nodes joined: ", nodes_joined)
-         time.sleep(6)
-      print("all nodes joined.")
-      ip_addresses = read_lines(hostsfile)
-      print("ip_addresses:", ip_addresses)
-      supervisord_pid = read_lines("/tmp/supervisord.pid")
-      print("supervisord_pid:", supervisord_pid)
-
-      # Set up SSHCluster with provided IP addresses
-      cluster = SSHCluster(ip_addresses)
-
-      # Connect a Dask client to the cluster
-      client = Client(cluster)
-      cluster.scale(NUM_NODES)  # scaling to 10 workers
-      os.kill(supervisord_pid[0], signal.SIGTERM)
-      exit(1)
+    hostsfile = "/input/mpi/hostsfile"
+    nodes_joined = count_lines(hostsfile)
+    print("nodes_joined", nodes_joined)
+ 
+    if JOB_INDEX == MAIN_NODE_INDEX:
+        while nodes_joined < NUM_NODES-1:
+            nodes_joined = count_lines(hostsfile)
+            print("nodes joined: ", nodes_joined)
+            time.sleep(6)
+        print("all nodes joined.")
+        ip_addresses = read_lines(hostsfile)
+        print("ip_addresses:", ip_addresses)
+        supervisord_pid = read_lines("/tmp/supervisord.pid")
+        print("supervisord_pid:", supervisord_pid)
+    
+        # Set up SSHCluster with provided IP addresses
+        cluster = SSHCluster(ip_addresses)
+    
+        # Connect a Dask client to the cluster
+        client = Client(cluster)
+        cluster.scale(NUM_NODES)  # scaling to 10 workers
+        os.kill(supervisord_pid[0], signal.SIGTERM)
+        exit(1)
+    else:
+        append_to_hostsfile(hostsfile)
+         
