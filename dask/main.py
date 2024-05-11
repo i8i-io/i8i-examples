@@ -7,8 +7,8 @@ import time
 
 #ARRAY_SIZE = int(os.environ.get('AWS_BATCH_JOB_ARRAY_SIZE', "5"))
 #ARRAY_INDEX = int(os.environ.get('AWS_BATCH_JOB_ARRAY_INDEX',"0"))
-JOB_INDEX = int(os.environ.get('AWS_BATCH_JOB_NODE_INDEX',"0"))
-NUM_NODES = int(os.environ.get('AWS_BATCH_JOB_NUM_NODES',"1"))
+JOB_INDEX = int(os.environ.get('AWS_BATCH_JOB_ARRAY_INDEX',"0"))
+NUM_NODES = int(os.environ.get('AWS_BATCH_JOB_ARRAY_SIZE',"1"))
 MAIN_NODE_INDEX = int(os.environ.get('AWS_BATCH_JOB_MAIN_NODE_INDEX',"0"))
 
 def append_to_hostsfile(hostsfile):
