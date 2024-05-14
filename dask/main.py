@@ -1,7 +1,6 @@
 import random
 import signal
 import time
-from fsHelper import set_exit_code, append_to_hostsfile, count_lines, read_lines
 import os
 import dask
 from dask.distributed import Client, SSHCluster, LocalCluster
@@ -9,7 +8,57 @@ import dask.dataframe as dd
 import json
 import pandas as pd
 import glob
+import socket
+import fcntl
 
+#################### FS ops 
+AWS_BATCH_EXIT_CODE_FILE="/tmp/batch-exit-code"
+
+def append_to_hostsfile(hostsfile):
+   ip_address = socket.gethostbyname(socket.gethostname())
+   print("ipaddress", ip_address)
+   lockfile = hostsfile + ".lock"
+   if not os.path.exists(hostsfile):
+       with open(hostsfile, "w") as f:
+           pass
+   if not os.path.exists(lockfile):
+       with open(lockfile, "w") as f:
+           pass
+   
+   # Acquire advisory lock
+   with open(lockfile, "w") as f:
+       fcntl.flock(f, fcntl.LOCK_EX)
+       
+       # Append IP address to hostsfile
+       with open(hostsfile, "a") as hosts:
+           hosts.write(ip_address + "\n")
+       
+       # Release lock
+       fcntl.flock(f, fcntl.LOCK_UN)
+       
+def count_lines(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            line_count = sum(1 for _ in file)
+        return line_count
+    except FileNotFoundError:
+        print("Error: File not found.")
+        return 0
+     
+def read_lines(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            lines = [line.strip() for line in file.readlines()]
+        return lines
+    except FileNotFoundError:
+        print("Error: File not found.")
+        return []
+
+def set_exit_code(code):
+    file = open(AWS_BATCH_EXIT_CODE_FILE, "w")  
+    file.write(code)
+    
+##############################
 #ARRAY_SIZE = int(os.environ.get('AWS_BATCH_JOB_ARRAY_SIZE', "5"))
 #ARRAY_INDEX = int(os.environ.get('AWS_BATCH_JOB_ARRAY_INDEX',"0"))
 JOB_INDEX = int(os.environ.get('AWS_BATCH_JOB_NODE_INDEX',"0"))
