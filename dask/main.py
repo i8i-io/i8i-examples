@@ -1,7 +1,7 @@
 import random
 import signal
 import time
-import helpers
+import fsHelper
 import os
 import dask
 from dask.distributed import Client, SSHCluster, LocalCluster
@@ -62,35 +62,49 @@ def sum_usage_count_by_album(data):
     
     return summed_data
 
+def processData(client):
+    print("processing data")
+    start_time = time.time()
+    normalized_export_dir = './exports'
+    normalized_files = glob.glob(os.path.join(normalized_export_dir, '*.csv'))
+    results = client.map(kendrick_lamar_album_usage, normalized_files)
+    results = client.gather(results)  
+    print("results ", sum_usage_count_by_album(results))
+
+    #me = df.groupby("track_album_name")["track_duration_ms"].mean()
+    #count = kendrick_lamar_album_usage(df)
+    print("Processing finished after %s seconds ---" % (time.time() - start_time))    
+    
 if __name__ == "__main__":
+    start_time = time.time()
     hostsfile = "/input/mpi/hostsfile"
-    nodes_joined = helpers.count_lines(hostsfile)
+    nodes_joined = fsHelper.count_lines(hostsfile)
     print("nodes_joined", nodes_joined)
- 
     if JOB_INDEX == MAIN_NODE_INDEX:
         while nodes_joined < NUM_NODES-1:
-            nodes_joined = helpers.count_lines(hostsfile)
+            nodes_joined = fsHelper.count_lines(hostsfile)
             print("nodes joined: ", nodes_joined)
             time.sleep(3)
         print("all nodes joined.")
-        ip_addresses = helpers.read_lines(hostsfile)
+        ip_addresses = fsHelper.read_lines(hostsfile)
         print("ip_addresses:", ip_addresses)
-        supervisord_pid = helpers.read_lines("/tmp/supervisord.pid")
+        supervisord_pid = fsHelper.read_lines("/tmp/supervisord.pid")
         print("supervisord_pid:", supervisord_pid)
         # Set up SSHCluster with provided IP addresses
         cluster = SSHCluster(ip_addresses, connect_options={"known_hosts": None})
     
         # Connect a Dask client to the cluster
         client = Client(cluster)
-        print("cluster info: ", cluster)
+        print("cluster info: ", client)
+        processData(client)
         #cluster.scale(NUM_NODES) 
-        helpers.set_exit_code("0")
+        fsHelper.set_exit_code("0")
         os.kill(int(supervisord_pid[0]), signal.SIGTERM)
         exit(1)
     else:
         print("reporting to master")
-        helpers.append_to_hostsfile(hostsfile)
-        
+        fsHelper.append_to_hostsfile(hostsfile)
+ 
 """
 if __name__ == "__main__":
     cluster = LocalCluster()
@@ -125,4 +139,4 @@ if __name__ == "__main__":
     #me = df.groupby("track_album_name")["track_duration_ms"].mean()
     #count = kendrick_lamar_album_usage(df)
     print("--- %s seconds ---" % (time.time() - start_time))    
-  """
+    """   
