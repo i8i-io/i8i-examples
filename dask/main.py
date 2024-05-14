@@ -108,7 +108,8 @@ def sum_usage_count_by_album(data):
     
     # Create a DataFrame from the flattened data
     df = pd.DataFrame(flattened_data)
-    
+    if len(df) == 0:
+        return "No album found"
     # Group by 'track_album_name' and sum the 'usage_count' for each album
     summed_data = df.groupby('track_album_name')['usage_count'].sum().reset_index()
     
@@ -146,10 +147,11 @@ if __name__ == "__main__":
     
         # Connect a Dask client to the cluster
         client = Client(cluster)
+        #cluster.scale(NUM_NODES) 
+        
         print("cluster info: ", client)
         result = processData(client)
         print("result: ", result)
-        #cluster.scale(NUM_NODES) 
         set_exit_code("0")
         os.kill(int(supervisord_pid[0]), signal.SIGTERM)
         exit(1)
