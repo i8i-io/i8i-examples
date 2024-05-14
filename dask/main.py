@@ -10,6 +10,7 @@ import pandas as pd
 import glob
 import socket
 import fcntl
+import multiprocessing
 
 #################### FS ops 
 AWS_BATCH_EXIT_CODE_FILE="/tmp/batch-exit-code"
@@ -85,14 +86,16 @@ def calculate_average_duration_per_album(data):
     
     return average_duration_per_album
 
-def kendrick_lamar_album_usage(file):
+def artist_album_usage(file, artist_name):
+    print("artist_name: ", file, artist_name)
     data = pd.read_csv(file)
     #calculate_average_duration_per_album(data)
-    # Filter tracks by Kendrick Lamar as artist
-    kendrick_tracks = data[data['track_artist_name'] == 'Kendrick Lamar']
-
+    artist_tracks = data[data['track_artist_name'] == artist_name]
+    print("tracks ", artist_tracks)
+    if len(artist_tracks == 0):
+        return []
     # Group by album name and count occurrences in playlists
-    album_usage = kendrick_tracks.groupby(['track_album_name']).size().reset_index(name='usage_count')
+    album_usage = artist_tracks.groupby(['track_album_name']).size().reset_index(name='usage_count')
 
     # Convert the result to a list of dictionaries
     result = album_usage.to_dict(orient='records')
@@ -116,15 +119,14 @@ def processData(client):
     start_time = time.time()
     normalized_export_dir = './exports'
     normalized_files = glob.glob(os.path.join(normalized_export_dir, '*.csv'))
-    results = client.map(kendrick_lamar_album_usage, normalized_files)
+    results = client.map(artist_album_usage, normalized_files, "Kendrick Lamar")
     results = client.gather(results)  
-    print("results ", sum_usage_count_by_album(results))
-
-    #me = df.groupby("track_album_name")["track_duration_ms"].mean()
-    #count = kendrick_lamar_album_usage(df)
     print("Processing finished after %s seconds ---" % (time.time() - start_time))    
+    return sum_usage_count_by_album(results)
     
 if __name__ == "__main__":
+    cpu_count = multiprocessing.cpu_count()
+    print("cpu_count: ", cpu_count)
     start_time = time.time()
     hostsfile = "/input/mpi/hostsfile"
     nodes_joined = count_lines(hostsfile)
@@ -140,12 +142,13 @@ if __name__ == "__main__":
         supervisord_pid = read_lines("/tmp/supervisord.pid")
         print("supervisord_pid:", supervisord_pid)
         # Set up SSHCluster with provided IP addresses
-        cluster = SSHCluster(ip_addresses, connect_options={"known_hosts": None})
+        cluster = SSHCluster(ip_addresses, connect_options={"known_hosts": None}, worker_options={"nthreads": cpu_count, "n_workers": NUM_NODES-1})
     
         # Connect a Dask client to the cluster
         client = Client(cluster)
         print("cluster info: ", client)
-        processData(client)
+        result = processData(client)
+        print("result: ", result)
         #cluster.scale(NUM_NODES) 
         set_exit_code("0")
         os.kill(int(supervisord_pid[0]), signal.SIGTERM)
@@ -153,12 +156,13 @@ if __name__ == "__main__":
     else:
         print("reporting to master")
         append_to_hostsfile(hostsfile)
- 
+        
+        
 """
 if __name__ == "__main__":
     cluster = LocalCluster()
     # Connect a Dask client to the cluster
-    client = Client(cluster)
+    client = Client(cluster )
     #cluster.scale(5)
     print(client)
     start_time = time.time()
@@ -181,11 +185,11 @@ if __name__ == "__main__":
     #latmax, lonmax = dask.compute(df.track_duration_ms.mean(), df.loc[df["track_duration_ms"].idxmax(), df.groupby("pid",).mean()])
     #print(latmax, lonmax.track_duration_ms  == 2172761)
     normalized_files = glob.glob(os.path.join(normalized_export_dir, '*.csv'))
-    results = client.map(kendrick_lamar_album_usage, normalized_files)
+    results = client.map(kendrick_lamar_album_usage, normalized_files, "s")
     results = client.gather(results)  
     print("results ", sum_usage_count_by_album(results))
 
     #me = df.groupby("track_album_name")["track_duration_ms"].mean()
     #count = kendrick_lamar_album_usage(df)
     print("--- %s seconds ---" % (time.time() - start_time))    
-    """   
+"""
