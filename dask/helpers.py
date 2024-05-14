@@ -1,5 +1,7 @@
 import socket
 import fcntl
+import os
+AWS_BATCH_EXIT_CODE_FILE="/tmp/batch-exit-code"
 
 def append_to_hostsfile(hostsfile):
    ip_address = socket.gethostbyname(socket.gethostname())
@@ -40,3 +42,7 @@ def read_lines(file_path):
     except FileNotFoundError:
         print("Error: File not found.")
         return []
+
+def set_exit_code(code):
+    file = open(AWS_BATCH_EXIT_CODE_FILE, "w")  
+    file.write(code)

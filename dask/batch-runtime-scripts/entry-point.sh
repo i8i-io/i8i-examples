@@ -7,6 +7,7 @@ log () {
 AWS_BATCH_EXIT_CODE_FILE="/tmp/batch-exit-code"
 supervisord -n -c "/etc/supervisor/supervisord.conf"
 sleep 2
+
 # if supervisor dies then read exit code from file we don't want to return the supervisors exit code
 log "Reading exit code from batch script stored at $AWS_BATCH_EXIT_CODE_FILE"
 if [ ! -f $AWS_BATCH_EXIT_CODE_FILE ]; then
