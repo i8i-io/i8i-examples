@@ -8,7 +8,7 @@ import csv
 import fcntl
 import os 
 
-ARRAY_SIZE = int(os.environ.get('AWS_BATCH_JOB_ARRAY_SIZE', "1000"))
+ARRAY_SIZE = int(os.environ.get('AWS_BATCH_JOB_ARRAY_SIZE', "100"))
 ARRAY_INDEX = int(os.environ.get('AWS_BATCH_JOB_ARRAY_INDEX',"2"))
 
 URL = "https://stackoverflow.com/collectives/aws?tab=questions&postfilter=subcommunityquestionpagefilter&subtab=newest&pagesize=50"
@@ -102,16 +102,16 @@ if __name__ == "__main__":
    print("PAGES_PER_NODE", PAGES_PER_NODE)
    print("TOTAL_PAGES", TOTAL_PAGES)
    print("REMAINDER", REMAINDER)
-   print("page_urls", page_urls)
+   #print("page_urls", page_urls)
 
    shape = (1, 7) 
    data = np.zeros(shape)
    for idx, paginated_url in enumerate(page_urls): 
       questions_arr = scrapeSearch(paginated_url)
       data = np.append(data, questions_arr, axis=0)
-      #print("scraped batch: ", questions_arr)
-   #headers = ["question_title", 'question_url', 'username', "user_profile_url", "votes", "answers", "views"]
-   #data_with_headers = np.vstack([headers, data[2:]])
-   csv_file = "/input/csv/data.csv"
-   append_array_to_csv(data[2:], csv_file)
+      print("scraped batch: ", paginated_url)
+   headers = ["question_title", 'question_url', 'username', "user_profile_url", "votes", "answers", "views"]
+   data_with_headers = np.vstack([headers, data[2:]])
+   csv_file = "data.csv"
+   append_array_to_csv(data_with_headers, csv_file)
    print("operation took --- %s seconds ---" % (time.time() - start_time))    

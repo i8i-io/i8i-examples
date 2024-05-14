@@ -24,7 +24,7 @@ jobTemplates:
             - type: MEMORY
               value: "4096"
 
-projectName: Stackoverflow Scraper
+workflowName: Stackoverflow Scraper
 metadata:
   description: Scraper
 config:
