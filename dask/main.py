@@ -1,7 +1,7 @@
 import random
 import signal
 import time
-import fsHelper
+from fsHelper import set_exit_code, append_to_hostsfile, count_lines, read_lines
 import os
 import dask
 from dask.distributed import Client, SSHCluster, LocalCluster
@@ -78,17 +78,17 @@ def processData(client):
 if __name__ == "__main__":
     start_time = time.time()
     hostsfile = "/input/mpi/hostsfile"
-    nodes_joined = fsHelper.count_lines(hostsfile)
+    nodes_joined = count_lines(hostsfile)
     print("nodes_joined", nodes_joined)
     if JOB_INDEX == MAIN_NODE_INDEX:
         while nodes_joined < NUM_NODES-1:
-            nodes_joined = fsHelper.count_lines(hostsfile)
+            nodes_joined = count_lines(hostsfile)
             print("nodes joined: ", nodes_joined)
             time.sleep(3)
         print("all nodes joined.")
-        ip_addresses = fsHelper.read_lines(hostsfile)
+        ip_addresses = read_lines(hostsfile)
         print("ip_addresses:", ip_addresses)
-        supervisord_pid = fsHelper.read_lines("/tmp/supervisord.pid")
+        supervisord_pid = read_lines("/tmp/supervisord.pid")
         print("supervisord_pid:", supervisord_pid)
         # Set up SSHCluster with provided IP addresses
         cluster = SSHCluster(ip_addresses, connect_options={"known_hosts": None})
@@ -98,12 +98,12 @@ if __name__ == "__main__":
         print("cluster info: ", client)
         processData(client)
         #cluster.scale(NUM_NODES) 
-        fsHelper.set_exit_code("0")
+        set_exit_code("0")
         os.kill(int(supervisord_pid[0]), signal.SIGTERM)
         exit(1)
     else:
         print("reporting to master")
-        fsHelper.append_to_hostsfile(hostsfile)
+        append_to_hostsfile(hostsfile)
  
 """
 if __name__ == "__main__":
