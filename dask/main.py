@@ -87,11 +87,14 @@ def calculate_average_duration_per_album(data):
     return average_duration_per_album
 
 def artist_album_usage(file, artist_name):
+    start = time.time()
     print("artist_name: ", file, artist_name)
     data = pd.read_csv(file)
     #calculate_average_duration_per_album(data)
     artist_tracks = data[data['track_artist_name'] == artist_name]
     print("tracks ", artist_tracks)
+    stop = time()
+    dask.distributed.get_worker().log_event("runtimes", {"start": start, "stop": stop})
     if len(artist_tracks == 0):
         return []
     # Group by album name and count occurrences in playlists
@@ -122,6 +125,8 @@ def processData(client):
     normalized_files = glob.glob(os.path.join(normalized_export_dir, '*.csv'))
     results = client.map(artist_album_usage, normalized_files, "Kendrick Lamar")
     results = client.gather(results)  
+    logs = client.get_events("runtimes")
+    print("logs: ", logs)
     print("Processing finished after %s seconds ---" % (time.time() - start_time))    
     return sum_usage_count_by_album(results)
     
