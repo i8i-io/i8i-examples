@@ -14,7 +14,7 @@ def download_and_unpack_zip_from_url(url, destination_folder):
     with requests.get(url, stream=True) as r:
         r.raise_for_status()
         with open(zip_file_path, 'wb') as f:
-            for chunk in r.iter_content(chunk_size=5242880):
+            for chunk in r.iter_content(chunk_size=524288000):
                 f.write(chunk)
 
     # Unpack the zip file
