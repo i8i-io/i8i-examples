@@ -152,7 +152,7 @@ if __name__ == "__main__":
     
         # Connect a Dask client to the cluster
         client = Client(cluster)
-        #cluster.scale(NUM_NODES) 
+        cluster.scale(NUM_NODES-1) 
         
         print("cluster info: ", client)
         result = processData(client)
