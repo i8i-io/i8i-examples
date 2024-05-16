@@ -93,7 +93,7 @@ def artist_album_usage(file, artist_name):
     #calculate_average_duration_per_album(data)
     artist_tracks = data[data['track_artist_name'] == artist_name]
     print("tracks ", artist_tracks)
-    stop = time()
+    stop = time.time()
     dask.distributed.get_worker().log_event("runtimes", {"start": start, "stop": stop})
     if len(artist_tracks == 0):
         return []
