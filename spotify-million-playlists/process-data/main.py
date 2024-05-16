@@ -121,7 +121,7 @@ def sum_usage_count_by_album(data):
 def processData(client):
     print("processing data")
     start_time = time.time()
-    normalized_export_dir = './exports'
+    normalized_export_dir = '/input/Data normalize'
     normalized_files = glob.glob(os.path.join(normalized_export_dir, '*.csv'))
     results = client.map(artist_album_usage, normalized_files, "Kendrick Lamar")
     results = client.gather(results)  
