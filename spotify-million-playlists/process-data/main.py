@@ -148,14 +148,25 @@ if __name__ == "__main__":
         print("ip_addresses:", ip_addresses)
         supervisord_pid = read_lines("/tmp/supervisord.pid")
         # Set up SSHCluster with provided IP addresses
-        cluster = SSHCluster(ip_addresses, connect_options={"known_hosts": None}, worker_options={"nthreads": cpu_count, "nworkers": NUM_NODES-1}, scheduler_options={"port": 0, "dashboard_address": ":8797"})
+        cluster = SSHCluster(ip_addresses, connect_options={"known_hosts": None}, worker_options={"nthreads": cpu_count, "n_workers": NUM_NODES-1}, scheduler_options={"port": 0, "dashboard_address": ":8797"})
         cluster.scale(NUM_NODES-1)
 
         # Connect a Dask client to the cluster
         client = Client(cluster)
         print("cluster info: ", client)
-        result = process_data(client)
-        print("result: ", result)
+        #result = process_data(client)
+        #print("result: ", result)
+        print("processing data")
+        start_time = time.time()
+        normalized_export_dir = '/input/Data normalize'
+        normalized_files = glob.glob(os.path.join(normalized_export_dir, '*.csv'))
+        results = client.map(artist_album_usage, normalized_files)
+        results = client.gather(results)  
+        logs = client.get_events("runtimes")
+        print("logs: ", logs)
+        print("Processing finished after %s seconds ---" % (time.time() - start_time))    
+        result = sum_usage_count_by_album(results)
+        print("result:", result)
         set_exit_code("0")
         os.kill(int(supervisord_pid[0]), signal.SIGTERM)
         exit(1)
