@@ -149,7 +149,8 @@ if __name__ == "__main__":
         supervisord_pid = read_lines("/tmp/supervisord.pid")
         # Set up SSHCluster with provided IP addresses
         cluster = SSHCluster(ip_addresses, connect_options={"known_hosts": None}, worker_options={"nthreads": cpu_count, "n_workers": NUM_NODES-1})
-    
+        cluster.scale(NUM_NODES-1)
+
         # Connect a Dask client to the cluster
         client = Client(cluster)
         print("cluster info: ", client)
@@ -164,14 +165,14 @@ if __name__ == "__main__":
         
 """
 if __name__ == "__main__":
-    cluster = LocalCluster()
+    cluster = LocalCluster(n_workers=1, threads_per_worker=1)
     # Connect a Dask client to the cluster
     client = Client(cluster)
     #cluster.scale(5)
     print(client)
     start_time = time.time()
     directory = '/Users/onuracikelli/Desktop/spotify_million_playlist_dataset/data/'
-    normalized_export_dir = './exports'
+    normalized_export_dir = './output'
 
     
     print("processing data")
@@ -189,4 +190,4 @@ if __name__ == "__main__":
     print("Processing finished after %s seconds ---" % (time.time() - start_time))    
     res = sum_usage_count_by_album(results)
     print(res)
-"""
+    """
