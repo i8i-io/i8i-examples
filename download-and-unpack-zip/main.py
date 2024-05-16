@@ -25,7 +25,7 @@ def download_and_unpack_zip_from_url(url, destination_folder):
     os.remove(zip_file_path)
 
 if __name__ == "__main__":
-    url = "https://spotify-million-playlist-dataset.s3.eu-central-1.wasabisys.com/files/spotify_million_playlist_dataset.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=9CMW6ZOKNMP5PC96SKW9%2F20240515%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20240515T081659Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=dc5d844a3c47c79e90d5d442649637958e3425a3de2a44694e8102efcc06f380"
+    url = "https://spotify-million-playlist-dataset.s3.eu-central-1.wasabisys.com/files/spotify_million_playlist_dataset.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=9CMW6ZOKNMP5PC96SKW9%2F20240516%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20240516T145914Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=61ff7db3cfeb133c040ea7be2e0399dc928ea0904f81a6699ce99e7f86f573ab"
     destination_folder = '/output'
 
     download_and_unpack_zip_from_url(url, destination_folder)
