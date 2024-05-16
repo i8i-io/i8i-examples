@@ -21,7 +21,7 @@ if __name__ == "__main__":
     directory = "/input/Data ingestion/data"
 
     json_files = glob.glob(os.path.join(directory, '*.json'))
-    json_files = json_files[:10]
+    json_files = json_files[:20]
     print("json files: ", json_files)
     for json_file in json_files:
         normalize_csv_file(json_file)
