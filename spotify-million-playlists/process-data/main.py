@@ -135,10 +135,12 @@ if __name__ == "__main__":
     print("cpu_count: ", cpu_count)
     start_time = time.time()
     hostsfile = "/input/mpi/hostsfile"
+    append_to_hostsfile(hostsfile)
+
     nodes_joined = count_lines(hostsfile)
-    print("nodes_joined", nodes_joined)
+
     if JOB_INDEX == MAIN_NODE_INDEX:
-        while nodes_joined < NUM_NODES-1:
+        while nodes_joined < NUM_NODES:
             if nodes_joined != count_lines(hostsfile):
                 print(f'New node joined')
             nodes_joined = count_lines(hostsfile)
@@ -173,7 +175,7 @@ if __name__ == "__main__":
         exit(1)
     else:
         print("reporting to master")
-        append_to_hostsfile(hostsfile)
+        #append_to_hostsfile(hostsfile)
         
 """
 if __name__ == "__main__":
