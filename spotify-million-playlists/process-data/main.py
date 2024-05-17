@@ -150,7 +150,7 @@ if __name__ == "__main__":
         print("ip_addresses:", ip_addresses)
         supervisord_pid = read_lines("/tmp/supervisord.pid")
         # Set up SSHCluster with provided IP addresses
-        cluster = SSHCluster(hosts=ip_addresses, connect_options={"known_hosts": None}, worker_options={"nthreads": 1, "n_workers": 2}, scheduler_options={"port": 0, "dashboard_address": ":8797"})
+        cluster = SSHCluster(hosts=ip_addresses, connect_options={"known_hosts": None}, worker_options={"nthreads": cpu_count, "n_workers": NUM_NODES-1}, scheduler_options={"port": 0, "dashboard_address": ":8797"})
 
         # Connect a Dask client to the cluster
         client = Client(cluster)
