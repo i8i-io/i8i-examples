@@ -1,3 +1,0 @@
-beautifulsoup4==4.12.3
-numpy==1.24.2
-Requests==2.31.0
