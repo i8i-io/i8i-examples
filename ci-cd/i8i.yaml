@@ -64,6 +64,8 @@ stages:
       - jobName: Second useless job
         jobType: ecsFargate
         ecsCluster: my-fargate-cluster
+        dependsOn:
+          - First useless job
         config:
           - compute:
               image: AWS_ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/i8i:second-useless-job
