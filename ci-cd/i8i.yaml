@@ -1,0 +1,71 @@
+jobTemplates:
+  - templateName: "imageBuilder"
+    jobName: ${JOB_NAME}
+    jobType: ecsFargate
+    ecsCluster: ${ECS_CLUSTER}
+    config:
+      - compute:
+          image: public.ecr.aws/i8i/kaniko-executor-ecr:latest
+          command:
+            [
+              "--context",
+              "${REPO_URL}",
+              "--context-sub-path",
+              "${REPO_SUB_PATH}",
+              "--dockerfile",
+              "Dockerfile",
+              "--destination",
+              "${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/i8i:${IMAGE_TAG}",
+              "--force",
+            ]
+          resourceRequirements:
+            - type: VCPU
+              value: "1"
+            - type: MEMORY
+              value: "4096"
+
+workflowName: Example Workflow with CI/CD
+metadata:
+  description: Example workflow with CI/CD for demo.
+stages:
+  - stageName: Image Build
+    metadata:
+      description: Build and push images to i8i repository.
+    jobs:
+      - templateName: imageBuilder
+        templateParameters:
+          JOB_NAME: First useless job image build
+          ECS_CLUSTER: my-fargate-cluster
+          REPO_URL: git://github.com/i8i-io/i8i-examples.git
+          REPO_SUB_PATH: ./ci-cd/useless-job
+          IMAGE_TAG: first-useless-job
+      - templateName: imageBuilder
+        templateParameters:
+          JOB_NAME: Second useless job image build
+          ECS_CLUSTER: my-fargate-cluster
+          REPO_URL: git://github.com/i8i-io/i8i-examples.git
+          REPO_SUB_PATH: ./ci-cd/sample-image
+          IMAGE_TAG: second-useless-job
+
+  - stageName: Run Built Images
+    dependsOn:
+      - Image Build
+    metadata:
+      description: Running images.
+    jobs:
+      - jobName: First useless job
+        jobType: ecsFargate
+        ecsCluster: my-fargate-cluster
+        config:
+          - compute:
+              image: AWS_ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/i8i:first-useless-job
+              cpu: "1024"
+              memory: "2048"
+      - jobName: Second useless job
+        jobType: ecsFargate
+        ecsCluster: my-fargate-cluster
+        config:
+          - compute:
+              image: AWS_ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/i8i:second-useless-job
+              cpu: "1024"
+              memory: "2048"
