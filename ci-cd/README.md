@@ -19,3 +19,5 @@ Stages:     Build Images(jobs run in parallel)   --->   Run Build Images
              --------------------------------
 
 ```
+
+i8i.yaml file is configured to run this example.
