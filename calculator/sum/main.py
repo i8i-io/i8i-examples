@@ -1,6 +1,7 @@
 import os
 
 output_path = '/output/result.txt'
+
 def sum_all_results(base_path):
     total_sum = 0
     files_found = 0

@@ -1,6 +1,8 @@
 import random
 import os
+
 output_path = '/output/result.txt'
+random_limit = int(os.environ.get("LIMIT", "10"))
 
 def read_and_divide(base_path):
     # Find the result.txt file
@@ -17,15 +19,15 @@ def read_and_divide(base_path):
         number = int(f.read().strip())
     
     # Generate a random divider between 1 and 10
-    divider = random.randint(1, 10)
+    divider = random.randint(1, random_limit)
     
     # Divide the numbers
-    result = number * divider
+    result = number / divider
     
     print(f"Number from file: {number}")
     print(f"Random divider: {divider}")
     with open(output_path, 'w') as f:
-        f.write(str(number))
+        f.write(str(result))
     
     print(f"Division result: {result} written to {output_path}")
     return result

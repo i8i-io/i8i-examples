@@ -2,6 +2,7 @@ import random
 import os
 
 output_path = '/output/result.txt'
+random_limit = int(os.environ.get("LIMIT", "10"))
 
 def read_and_multiply(base_path):
     # Find the result.txt file
@@ -18,7 +19,7 @@ def read_and_multiply(base_path):
         number = int(f.read().strip())
     
     # Generate a random multiplier between 1 and 10
-    multiplier = random.randint(1, 10)
+    multiplier = random.randint(1, random_limit)
     
     # Multiply the numbers
     result = number * multiplier
@@ -26,7 +27,7 @@ def read_and_multiply(base_path):
     print(f"Number from file: {number}")
     print(f"Random multiplier: {multiplier}")
     with open(output_path, 'w') as f:
-        f.write(str(number))
+        f.write(str(result))
     
     print(f"Multiplication result: {result} written to {output_path}")
     

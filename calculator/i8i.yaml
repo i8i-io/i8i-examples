@@ -26,7 +26,7 @@ stages:
               memory: "512"
               environmentVariables:
                 - name: LIMIT
-                  value: "1"
+                  value: "750"
           network:
             assignPublicIp: true
       - jobName: x * y
@@ -44,7 +44,7 @@ stages:
               memory: "512"
               environmentVariables:
                 - name: LIMIT
-                  value: "1"
+                  value: "100"
           network:
             assignPublicIp: true
       - jobName: x / z
@@ -62,7 +62,7 @@ stages:
               memory: "512"
               environmentVariables:
                 - name: LIMIT
-                  value: "1"
+                  value: "25"
           network:
             assignPublicIp: true
       - jobName: (x * y) + (x / z)
