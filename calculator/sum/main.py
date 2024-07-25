@@ -12,12 +12,21 @@ def sum_all_results(base_path):
                 file_path = os.path.join(root, file)
                 try:
                     with open(file_path, 'r') as f:
-                        value = int(f.read().strip())
+                        content = f.read().strip()
+                        try:
+                            # Try to convert to int first
+                            value = int(content)
+                        except ValueError:
+                            try:
+                                # If not int, try float
+                                value = float(content)
+                            except ValueError:
+                                print(f"Warning: {file_path} contains non-numeric value: {content}")
+                                continue
+                        
                         total_sum += value
                         files_found += 1
                         print(f"Found {file_path}: value = {value}")
-                except ValueError:
-                    print(f"Error: {file_path} does not contain a valid integer")
                 except Exception as e:
                     print(f"Error reading {file_path}: {str(e)}")
 
