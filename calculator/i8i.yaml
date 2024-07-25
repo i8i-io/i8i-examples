@@ -21,7 +21,7 @@ stages:
         config:
           compute:
             - github:
-                dockerfilePath: x/Dockerfile
+                dockerfilePath: calculator/x/Dockerfile
               cpu: "256"
               memory: "512"
               environmentVariables:
@@ -39,7 +39,7 @@ stages:
         config:
           compute:
             - github:
-                dockerfilePath: y/Dockerfile
+                dockerfilePath: calculator/y/Dockerfile
               cpu: "256"
               memory: "512"
               environmentVariables:
@@ -57,7 +57,7 @@ stages:
         config:
           compute:
             - github:
-                dockerfilePath: z/Dockerfile
+                dockerfilePath: calculator/z/Dockerfile
               cpu: "256"
               memory: "512"
               environmentVariables:
@@ -76,7 +76,7 @@ stages:
         config:
           compute:
             - github:
-                dockerfilePath: sum/Dockerfile
+                dockerfilePath: calculator/sum/Dockerfile
               cpu: "256"
               memory: "512"
               environmentVariables:
