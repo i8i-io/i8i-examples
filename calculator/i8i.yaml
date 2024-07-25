@@ -1,0 +1,86 @@
+workflowName: Calculator
+metadata:
+  description: This workflow makes calculation for the function f(x) = (x * y) + (x / z) by randomly generating values for x,y and z. Every computation takes in a different Docker container.
+config:
+  github:
+    repositoryUrl: https://github.com/i8i-io/i8i-examples
+    branch: master
+    yamlPath: calculator/i8i.yaml
+stages:
+  - stageName: Calculation
+    metadata:
+      description: Sample description
+      tags:
+        - demo
+    jobs:
+      - jobName: Generate x
+        metadata:
+          description: Generate a random value for x between 1 and given LIMIT environment variable value.
+        jobType: ecsFargate
+        ecsCluster: i8iFargate
+        config:
+          compute:
+            - github:
+                dockerfilePath: x/Dockerfile
+              cpu: "256"
+              memory: "512"
+              environmentVariables:
+                - name: LIMIT
+                  value: "1"
+          network:
+            assignPublicIp: true
+      - jobName: x * y
+        metadata:
+          description: Creates a random value for y between 1 and given LIMIT environment variable value and multiplies x with y.
+        jobType: ecsFargate
+        ecsCluster: i8iFargate
+        dependsOn:
+          - Generate x
+        config:
+          compute:
+            - github:
+                dockerfilePath: y/Dockerfile
+              cpu: "256"
+              memory: "512"
+              environmentVariables:
+                - name: LIMIT
+                  value: "1"
+          network:
+            assignPublicIp: true
+      - jobName: x / z
+        metadata:
+          description: Creates a random value for z between 1 and given LIMIT environment variable value and divides x by z.
+        jobType: ecsFargate
+        ecsCluster: i8iFargate
+        dependsOn:
+          - Generate x
+        config:
+          compute:
+            - github:
+                dockerfilePath: z/Dockerfile
+              cpu: "256"
+              memory: "512"
+              environmentVariables:
+                - name: LIMIT
+                  value: "1"
+          network:
+            assignPublicIp: true
+      - jobName: (x * y) + (x / z)
+        metadata:
+          description: Sums the previous calculations
+        jobType: ecsFargate
+        ecsCluster: i8iFargate
+        dependsOn:
+          - x * y
+          - x / z
+        config:
+          compute:
+            - github:
+                dockerfilePath: sum/Dockerfile
+              cpu: "256"
+              memory: "512"
+              environmentVariables:
+                - name: LIMIT
+                  value: "1"
+          network:
+            assignPublicIp: true

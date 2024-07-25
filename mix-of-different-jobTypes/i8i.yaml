@@ -1,0 +1,45 @@
+workflowName: Mix of different job types
+config:
+  github:
+    repositoryUrl: i8i-io/i8i-examples
+    branch: master
+    yamlPath: mix-of-different-jobTypes/i8i.yaml
+    runOnUpdate: false
+metadata:
+  description: Example workflow that contains jobs with different types and different sizes.
+stages:
+  - stageName: Mix Stage
+    metadata:
+      description: Running the stage.
+    jobs:
+      - jobName: Array Job
+        jobType: container
+        arraySize: 4
+        jobQueue: fargateDemoQueue
+        config:
+          compute:
+            - github:
+                dockerfilePath: mix-of-different-jobTypes/array-job/Dockerfile
+              resourceRequirements:
+                - type: VCPU
+                  value: "1"
+                - type: MEMORY
+                  value: "1024"
+          network:
+            assignPublicIp: true
+      - jobName: Ecs Fargate Job
+        jobType: ecsFargate
+        metadata:
+          description: This job does literally nothing.
+        ecsCluster: fargate-cluster
+        numTasks: 5
+        dependsOn:
+          - Array Job
+        config:
+          compute:
+            - github:
+                dockerfilePath: mix-of-different-jobTypes/ecsFargate-job/Dockerfile
+              cpu: "1024"
+              memory: "2048"
+          network:
+            assignPublicIp: true

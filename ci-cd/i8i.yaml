@@ -1,0 +1,39 @@
+workflowName: Example Workflow with CI/CD
+config:
+  github:
+    repositoryUrl: i8i-io/i8i-examples
+    branch: master
+    yamlPath: ci-cd/i8i.yaml
+metadata:
+  description: Example workflow with CI/CD for demo.
+stages:
+  - stageName: Run Built Images
+    metadata:
+      description: Running images.
+    jobs:
+      - jobName: First useless job
+        jobType: ecsFargate
+        ecsCluster: fargate-cluster
+        config:
+          compute:
+            - github:
+                dockerfilePath: ci-cd/useless-job/Dockerfile
+              cpu: "1024"
+              memory: "2048"
+          network:
+            assignPublicIp: true
+      - jobName: Second useless job
+        jobType: ecsFargate
+        metadata:
+          description: This job does literally nothing.
+        ecsCluster: fargate-cluster
+        numTasks: 3
+        dependsOn:
+          - First useless job
+        config:
+          compute:
+            - image: 381491877722.dkr.ecr.us-east-1.amazonaws.com/i8i:first-useless-job
+              cpu: "1024"
+              memory: "2048"
+          network:
+            assignPublicIp: true

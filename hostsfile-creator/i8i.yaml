@@ -1,0 +1,39 @@
+workflowName: Hostsfile creator
+metadata:
+  description: Create hostfile and append node ip
+config:
+  github:
+    repositoryUrl: https://github.com/i8i-io/i8i-examples
+    branch: master
+    yamlPath: hostsfile-creator/i8i.yaml
+  storage:
+    volumeType: EFS
+    sharedVolumes:
+      - volumeName: mpi
+        volumeType: EFS
+stages:
+  - stageName: parallel multinode stage
+    metadata:
+      description: Sample description
+      tags:
+        - tag 1
+    jobs:
+      - jobName: Multinode Job
+        metadata:
+          description: "test "
+        jobType: multinode
+        jobQueue: c5-8cpu
+        numNodes: 10
+        mainNode: 0
+        config:
+          compute:
+            - github:
+                dockerfilePath: hostsfile-creator/Dockerfile
+              resourceRequirements:
+                - type: VCPU
+                  value: "4"
+                - type: MEMORY
+                  value: "8192"
+              targetNodes: "0:"
+          network:
+            assignPublicIp: true
