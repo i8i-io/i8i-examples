@@ -4,19 +4,16 @@ import os
 output_path = '/output/result.txt'
 random_limit = int(os.environ.get("LIMIT", "10"))
 
-def read_and_divide(base_path):
-    # Find the result.txt file
-    for root, dirs, files in os.walk(base_path):
-        if 'result.txt' in files:
-            file_path = os.path.join(root, 'result.txt')
-            break
-    else:
-        print("result.txt not found")
-        return
-    
-    # Read the number from the file
+def read_and_divide(file_path):
+    # Read the result.txt file
     with open(file_path, 'r') as f:
-        number = int(f.read().strip())
+        content = f.read().strip()
+        try:
+            # Try to convert to int first
+            number = int(content)
+        except ValueError:
+            # If not int, try float
+            number = float(content)
     
     # Generate a random divider between 1 and 10
     divider = random.randint(1, random_limit)
@@ -33,7 +30,7 @@ def read_and_divide(base_path):
     return result
 
 def main():
-    read_and_divide("/input")
+    read_and_divide("/input/Generate x/result.txt")
     
 if __name__ == "__main__":
     main()
