@@ -1,0 +1,44 @@
+workflowName: Example Workflow with Custom CI/CD
+stages:
+  - stageName: Build Docker Images
+    metadata:
+      description: Building images.
+    jobs:
+      - jobName: First useless job
+        jobType: ecsFargate
+        ecsCluster: fargate-cluster
+        config:
+          compute:
+            - image: public.ecr.aws/i8i/kaniko-executor-ecr:latest
+              command:
+                [
+                  "--context",
+                  "git://github.com/i8i-io/i8i-examples.git",
+                  "--context-sub-path",
+                  "./custom-ci-cd/useless-job",
+                  "--dockerfile",
+                  "Dockerfile",
+                  "--destination",
+                  "AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/i8i:my-image-tag",
+                  "--force",
+                ]
+              cpu: "1024"
+              memory: "4096"
+          network:
+            assignPublicIp: true
+  - stageName: Run Built Images
+    dependsOn:
+      - Build Docker Images
+    metadata:
+      description: Running images.
+    jobs:
+      - jobName: First useless job
+        jobType: ecsFargate
+        ecsCluster: fargate-cluster
+        config:
+          compute:
+            - image: AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/i8i:my-image-tag
+              cpu: "1024"
+              memory: "2048"
+          network:
+            assignPublicIp: true
