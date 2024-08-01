@@ -18,6 +18,7 @@ stages:
           description: Generate a random value for x between 1 and given LIMIT environment variable value.
         jobType: ecsFargate
         ecsCluster: i8iFargate
+        numTasks: 30
         config:
           compute:
             - github:
@@ -79,8 +80,5 @@ stages:
                 dockerfilePath: calculator/sum/Dockerfile
               cpu: "256"
               memory: "512"
-              environmentVariables:
-                - name: LIMIT
-                  value: "1"
           network:
             assignPublicIp: true
