@@ -29,4 +29,4 @@ def copy_files(input_path, output_dir='/output'):
         print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
-    copy_files("data-ingestor")
+    copy_files("data-ingestion")
