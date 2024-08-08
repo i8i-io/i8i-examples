@@ -1,0 +1,106 @@
+workflowName: Throughput Calculator
+metadata:
+  description: This workflow calculates total throughput.
+config:
+  github:
+    repositoryUrl: https://github.com/i8i-io/i8i-examples
+    branch: master
+    yamlPath: throughput-calculator/i8i.yaml
+stages:
+  - stageName: Calculation
+    metadata:
+      description: Sample description
+      tags:
+        - demo
+    jobs:
+      - jobName: data-ingestion
+        metadata:
+          description: Download video and write it to /output directory.
+        jobType: ecsFargate
+        ecsCluster: i8iFargate
+        numTasks: 1
+        config:
+          compute:
+            - github:
+                dockerfilePath: throughput-calculator/data-ingestor/Dockerfile
+              cpu: "256"
+              memory: "512"
+              environmentVariables:
+                - name: FILE_URL
+                  value: "https://i8i-content.s3.amazonaws.com/bike.mp4"
+          network:
+            assignPublicIp: true
+      - jobName: data-replicator-1
+        metadata:
+          description: Copies data from /input/data-ingestion to /output
+        jobType: ecsFargate
+        ecsCluster: i8iFargate
+        dependsOn:
+          - data-ingestion
+        config:
+          compute:
+            - github:
+                dockerfilePath: throughput-calculator/data-replicator/Dockerfile
+              cpu: "256"
+              memory: "512"
+              environmentVariables:
+                - name: LIMIT
+                  value: "100"
+          network:
+            assignPublicIp: true
+      - jobName: data-replicator-2
+        metadata:
+          description: Copies data from /input/data-ingestion to /output
+        jobType: ecsFargate
+        ecsCluster: i8iFargate
+        dependsOn:
+          - data-ingestion
+        config:
+          compute:
+            - github:
+                dockerfilePath: throughput-calculator/data-replicator/Dockerfile
+              cpu: "256"
+              memory: "512"
+              environmentVariables:
+                - name: LIMIT
+                  value: "100"
+          network:
+            assignPublicIp: true
+      - jobName: data-replicator-3
+        metadata:
+          description: Copies data from /input/data-ingestion to /output
+        jobType: ecsFargate
+        ecsCluster: i8iFargate
+        dependsOn:
+          - data-ingestion
+        config:
+          compute:
+            - github:
+                dockerfilePath: throughput-calculator/data-replicator/Dockerfile
+              cpu: "256"
+              memory: "512"
+              environmentVariables:
+                - name: LIMIT
+                  value: "100"
+          network:
+            assignPublicIp: true
+      - jobName: throughput-calculator
+        metadata:
+          description: t
+        jobType: ecsFargate
+        ecsCluster: i8iFargate
+        dependsOn:
+          - replicator-1
+          - replicator-2
+          - replicator-3
+        config:
+          compute:
+            - github:
+                dockerfilePath: throughput-calculator/throughput-calculator/Dockerfile
+              cpu: "256"
+              memory: "512"
+              environmentVariables:
+                - name: LIMIT
+                  value: "100"
+          network:
+            assignPublicIp: true

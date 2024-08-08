@@ -1,6 +1,6 @@
 workflowName: Calculator
 metadata:
-  description: This workflow makes calculation for the function f(x) = (x * y) + (x / z) by randomly generating values for x,y and z. Every computation takes in a different Docker container.
+  description: This workflow makes calculation for the function f(x) = (x * y) + (x / z) by randomly generating values for x,y and z. Every computation takes place in a different Docker container.
 config:
   github:
     repositoryUrl: https://github.com/i8i-io/i8i-examples
