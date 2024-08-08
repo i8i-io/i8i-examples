@@ -61,13 +61,13 @@ def calculate_throughput_for_directories(directories, read_repeats):
     return results
 
 if __name__ == "__main__":
-    directories = [ '/input/replicator-1','/input/replicator-2','/input/replicator-3']
+    directories = [ '/input/data-replicator-1','/input/data-replicator-2','/input/data-replicator-3']
     results = calculate_throughput_for_directories(directories, read_repeats=100)
 
     for i, (throughput, file_count) in enumerate(results):
         print(f"Directory {directories[i]}: Average Throughput = {throughput:.2f} MiBps, File Count = {file_count}")
 
-    directories = [ '/input/replicator-1','/input/replicator-1','/input/replicator-1']
+    directories = [ '/input/data-replicator-1','/input/data-replicator-1','/input/data-replicator-1',]
     results = calculate_throughput_for_directories(directories, read_repeats=100)
 
     for i, (throughput, file_count) in enumerate(results):
