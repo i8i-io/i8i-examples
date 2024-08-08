@@ -83,9 +83,9 @@ stages:
         jobType: ecsFargate
         ecsCluster: i8iFargate
         dependsOn:
-          - replicator-1
-          - replicator-2
-          - replicator-3
+          - data-replicator-1
+          - data-replicator-2
+          - data-replicator-3
         config:
           compute:
             - github:
