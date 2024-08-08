@@ -26,7 +26,7 @@ stages:
               memory: "512"
               environmentVariables:
                 - name: FILE_URL
-                  value: "https://i8i-content.s3.amazonaws.com/bike.mp4"
+                  value: https://i8i-content.s3.amazonaws.com/bike.mp4
           network:
             assignPublicIp: true
       - jobName: data-replicator-1
@@ -60,9 +60,6 @@ stages:
                 dockerfilePath: throughput-calculator/data-replicator/Dockerfile
               cpu: "256"
               memory: "512"
-              environmentVariables:
-                - name: LIMIT
-                  value: "100"
           network:
             assignPublicIp: true
       - jobName: data-replicator-3
@@ -78,9 +75,6 @@ stages:
                 dockerfilePath: throughput-calculator/data-replicator/Dockerfile
               cpu: "256"
               memory: "512"
-              environmentVariables:
-                - name: LIMIT
-                  value: "100"
           network:
             assignPublicIp: true
       - jobName: throughput-calculator
