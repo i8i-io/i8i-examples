@@ -90,7 +90,7 @@ stages:
           compute:
             - github:
                 dockerfilePath: throughput-calculator/throughput-calculator/Dockerfile
-              cpu: "256"
-              memory: "512"
+              cpu: "4096"
+              memory: "8192"
           network:
             assignPublicIp: true
