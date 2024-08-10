@@ -79,7 +79,7 @@ stages:
             assignPublicIp: true
       - jobName: throughput-calculator
         metadata:
-          description: test
+          description: testt
         jobType: ecsFargate
         ecsCluster: i8iFargate
         dependsOn:
